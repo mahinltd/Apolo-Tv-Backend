@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" fill="none">
+  <!-- Transparent background compatible -->
+  <rect width="1200" height="300" fill="transparent" />
+
+  <!-- Mascot group (preserved original shapes, scaled and positioned left) -->
+  <g id="mascot" transform="translate(40,10) scale(0.45)">
+    <rect x="96" y="120" width="320" height="280" rx="95" fill="#FF5A45"/>
+    <line x1="200" y1="120" x2="145" y2="55" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+    <line x1="312" y1="120" x2="367" y2="55" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+    <line x1="175" y1="390" x2="150" y2="440" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+    <line x1="337" y1="390" x2="362" y2="440" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+    <rect x="145" y="180" width="222" height="165" rx="58" fill="#F4F1EA" stroke="#F8CEC2" stroke-width="10"/>
+    <circle cx="205" cy="248" r="20" fill="#FF5A45"/>
+    <circle cx="307" cy="248" r="20" fill="#FF5A45"/>
+    <path d="M235 305 Q256 327 285 304" stroke="#F8CEC2" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M228 297 Q256 325 280 297" stroke="#FF5A45" stroke-width="16" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Text block on right, responsive sizing via emulated scale -->
+  <g id="wordmark" transform="translate(420,150)">
+    <!-- Brand name background alignment box (invisible, helps alignment) -->
+    <rect x="0" y="-72" width="720" height="144" fill="transparent" />
+    <!-- App name (default: Apolo TV) - use font-family stack for web/systems -->
+    <text id="appName" x="0" y="24" font-family="Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial" font-weight="700" font-size="72" fill="#FF5A45" letter-spacing="1">Apolo TV</text>
+    <!-- Tagline optional (subtle) -->
+    <text id="tagline" x="0" y="64" font-family="Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial" font-weight="500" font-size="18" fill="#6b6b6b" opacity="0.9">Stream smarter • Watch together</text>
+  </g>
+</svg>

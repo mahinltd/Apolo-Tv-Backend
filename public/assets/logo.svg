@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- TV BODY -->
+  <rect x="96" y="120" width="320" height="280" rx="95" fill="#FF5A45"/>
+  <!-- Antenna Left -->
+  <line x1="200" y1="120" x2="145" y2="55" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+  <!-- Antenna Right -->
+  <line x1="312" y1="120" x2="367" y2="55" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+  <!-- Left Leg -->
+  <line x1="175" y1="390" x2="150" y2="440" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+  <!-- Right Leg -->
+  <line x1="337" y1="390" x2="362" y2="440" stroke="#FF5A45" stroke-width="28" stroke-linecap="round"/>
+  <!-- SCREEN -->
+  <rect x="145" y="180" width="222" height="165" rx="58" fill="#F4F1EA" stroke="#F8CEC2" stroke-width="10"/>
+  <!-- LEFT EYE -->
+  <circle cx="205" cy="248" r="20" fill="#FF5A45"/>
+  <!-- RIGHT EYE -->
+  <circle cx="307" cy="248" r="20" fill="#FF5A45"/>
+  <!-- SMILE SHADOW -->
+  <path d="M235 305 Q256 327 285 304" stroke="#F8CEC2" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <!-- SMILE -->
+  <path d="M228 297 Q256 325 280 297" stroke="#FF5A45" stroke-width="16" stroke-linecap="round" fill="none"/>
+</svg>
