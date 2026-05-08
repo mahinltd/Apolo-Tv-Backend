@@ -10,9 +10,11 @@ const rateLimit = require('express-rate-limit');
 const authRoute = require('./routes/auth.route');
 const healthRouter = require('./routes/health.route');
 const channelRouter = require('./routes/channel.route');
+const streamRouter = require('./routes/stream.route');
 const paymentRoute = require('./routes/payment.route');
 const userRoute = require('./routes/user.route');
 const adminRoute = require('./routes/admin.route');
+const { startChannelHealthCron } = require('./services/cron.service');
 const errorMiddleware = require('./middlewares/error.middleware');
 
 const app = express();
@@ -34,6 +36,7 @@ app.use(limiter);
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/health', healthRouter);
 app.use('/api/v1/channels', channelRouter);
+app.use('/api/v1/stream', streamRouter);
 app.use('/api/v1/payments', paymentRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/admin', adminRoute);
@@ -56,6 +59,7 @@ app.use(errorMiddleware);
 const startServer = async () => {
   try {
     await connectDB();
+    startChannelHealthCron();
     app.listen(PORT, () => {
       console.log(`🚀 Apolo TV API server is running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV}`);
