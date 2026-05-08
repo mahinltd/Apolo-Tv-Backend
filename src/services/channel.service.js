@@ -2,6 +2,21 @@
 
 const axios = require('axios');
 
+const extractCountryCodeFromTvgId = (metaData) => {
+	const idCountryMatch = metaData.match(/tvg-id="[^"]*\.([a-z]{2,3})@[^\"]*"/i);
+	return idCountryMatch ? idCountryMatch[1].toUpperCase() : null;
+};
+
+const extractCountryCodeFromUrl = (url) => {
+	const normalizedUrl = String(url || '').toLowerCase();
+
+	if (normalizedUrl.includes('/bangladesh/')) {
+		return 'BD';
+	}
+
+	return null;
+};
+
 const fetchAndParseChannels = async () => {
 	try {
 		console.log('🔗 Fetching M3U data from IPTV-ORG...');
@@ -24,6 +39,7 @@ const fetchAndParseChannels = async () => {
 				const nameMatch = metaData.match(/tvg-name="([^"]*)"/i);
 				const logoMatch = metaData.match(/tvg-logo="([^"]*)"/i);
 				const countryMatch = metaData.match(/tvg-country="([^"]*)"/i);
+				const derivedCountryCode = extractCountryCodeFromTvgId(metaData);
 				const languageMatch = metaData.match(/tvg-language="([^"]*)"/i);
 				const groupMatch = metaData.match(/group-title="([^"]*)"/i);
 
@@ -37,10 +53,12 @@ const fetchAndParseChannels = async () => {
 					}
 				}
 
+				const derivedCountryFromUrl = extractCountryCodeFromUrl(url);
+
 				channels.push({
 					name: nameMatch ? nameMatch[1] : channelName,
 					logo: logoMatch ? logoMatch[1] : 'Unknown',
-					country: countryMatch ? countryMatch[1] : 'Unknown',
+					country: countryMatch ? countryMatch[1] : derivedCountryCode || derivedCountryFromUrl || 'Unknown',
 					language: languageMatch ? languageMatch[1] : 'Unknown',
 					category: groupMatch ? groupMatch[1] : 'Unknown',
 					url: url,
