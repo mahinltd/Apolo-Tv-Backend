@@ -8,4 +8,7 @@ const router = express.Router();
 
 router.put('/subscriptions/:id/approve', protect, adminProtect, approveSubscription);
 
+const { triggerChannelSync } = require('../controllers/admin.controller');
+router.post('/sync-channels', protect, adminProtect, triggerChannelSync);
+
 module.exports = router;

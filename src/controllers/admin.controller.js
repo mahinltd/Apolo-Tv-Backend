@@ -53,4 +53,16 @@ const approveSubscription = async (req, res, next) => {
   }
 };
 
-module.exports = { approveSubscription };
+
+const { syncChannelsToDatabase } = require('../services/channel-sync.service');
+
+const triggerChannelSync = async (req, res, next) => {
+  try {
+    const result = await syncChannelsToDatabase();
+    return res.status(200).json({ status: 'success', result });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { approveSubscription, triggerChannelSync };

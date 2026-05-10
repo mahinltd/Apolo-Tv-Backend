@@ -11,6 +11,7 @@ const temporaryPlaybackCache = new NodeCache({ stdTTL: 1800, checkperiod: 60 });
 const registerTemporaryPlaybackSource = (sourceUrl) => {
   const token = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   temporaryPlaybackCache.set(token, sourceUrl);
+  // Return token only; controller will generate absolute URL to avoid leaking host assumptions here.
   return `/api/v1/stream/play/temp/${token}`;
 };
 
@@ -180,7 +181,11 @@ const proxyPlaylistResponse = async (res, channelId, sourceUrl) => {
   }
 
   const upstreamResponse = await fetchWithRetry(sourceUrl, { timeout: 15000, responseType: 'text' }, 2);
-  const rewrittenM3u8 = rewriteM3u8ToInternalUrls(String(upstreamResponse.data || ''), sourceUrl, channelId);
+  const originalText = String(upstreamResponse.data || '');
+  const rewrittenM3u8 = rewriteM3u8ToInternalUrls(originalText, sourceUrl, channelId);
+
+  // Debug: log upstream status and sizes (no URLs leaked)
+  console.debug(`proxy-playlist: channelId=${channelId} status=${upstreamResponse.status} originalBytes=${originalText.length} rewrittenBytes=${rewrittenM3u8.length}`);
 
   streamCache.set(cacheKey, rewrittenM3u8);
   setPlaylistHeaders(res);

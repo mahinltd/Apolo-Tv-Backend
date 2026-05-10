@@ -14,6 +14,11 @@ const channelSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    logo: {
+      type: String,
+      default: 'Unknown',
+      trim: true,
+    },
     backupUrls: [
       {
         type: String,

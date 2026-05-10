@@ -11,19 +11,33 @@ const normalize = (value) => String(value || '').trim().toLowerCase();
 
 const getPlaybackUrl = (channelId) => `/api/v1/stream/play/${channelId}`;
 
-const formatChannelResponse = (channel) => ({
-  _id: channel._id,
-  name: channel.name,
-  logo: channel.logo,
-  country: channel.country,
-  language: channel.language,
-  category: channel.category,
-  isWorking: channel.isWorking !== false,
-  playbackUrl: channel.playbackUrl || getPlaybackUrl(channel._id),
-  url: channel.playbackUrl || getPlaybackUrl(channel._id),
-  lastCheckedAt: channel.lastCheckedAt,
-  syncedAt: channel.syncedAt,
-});
+const formatChannelResponse = (channel, baseUrl) => {
+  const playbackPath = channel.playbackUrl || getPlaybackUrl(channel._id);
+  const playbackUrl = playbackPath.startsWith('http') ? playbackPath : `${baseUrl}${playbackPath}`;
+
+  if (!channel.logo || channel.logo === 'Unknown') {
+    console.debug(`logo-missing: channel=${channel._id} name="${channel.name}"`);
+  }
+
+  return {
+    _id: channel._id,
+    name: channel.name,
+    logo: channel.logo,
+    logoUrl: channel.logo,
+    image: channel.logo,
+    icon: channel.logo,
+    country: channel.country,
+    language: channel.language,
+    category: channel.category,
+    isWorking: channel.isWorking !== false,
+    playbackUrl,
+    playUrl: playbackUrl,
+    streamUrl: playbackUrl,
+    url: playbackUrl,
+    lastCheckedAt: channel.lastCheckedAt,
+    syncedAt: channel.syncedAt,
+  };
+};
 
 const getChannelsFromDatabase = async () => {
   return Channel.find({ isWorking: { $ne: false } })
@@ -67,7 +81,7 @@ const filterChannels = (channels, searchTerm, countryTerm, limit) => {
     });
   }
 
-  return filteredChannels.slice(0, limit).map(formatChannelResponse);
+  return filteredChannels.slice(0, limit);
 };
 
 const getGlobalChannels = async (req, res, next) => {
@@ -86,6 +100,11 @@ const getGlobalChannels = async (req, res, next) => {
     if (cachedData) {
       return res.status(200).json(cachedData);
     }
+
+    const proto = req.get('x-forwarded-proto') || req.protocol;
+    const hostHeader = req.get('x-forwarded-host') || req.get('host');
+    const baseUrl = process.env.BASE_URL || `${proto}://${hostHeader}`;
+    console.debug(`channels-baseUrl: using ${baseUrl} (proto=${proto} host=${hostHeader})`);
 
     let databaseChannels = await getChannelsFromDatabase();
 
@@ -124,7 +143,7 @@ const getGlobalChannels = async (req, res, next) => {
         searchTerm,
         countryTerm,
         limit
-      );
+      ).map((channel) => formatChannelResponse(channel, baseUrl));
 
       const fallbackResponse = {
         status: 'success',
@@ -137,13 +156,17 @@ const getGlobalChannels = async (req, res, next) => {
       return res.status(200).json(fallbackResponse);
     }
 
-    const channels = filterChannels(databaseChannels, searchTerm, countryTerm, limit);
+    const channels = filterChannels(databaseChannels, searchTerm, countryTerm, limit).map((c) =>
+      formatChannelResponse(c, baseUrl)
+    );
 
     const responseData = {
       status: 'success',
       totalFetched: channels.length,
       channels,
     };
+
+    console.debug(`channels-served: count=${channels.length} baseUrl=${baseUrl}`);
 
     cache.set(cacheKey, responseData);
 
